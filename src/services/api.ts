@@ -106,27 +106,67 @@ export const captureApi = {
   },
 }
 
+// WebSocket URL from environment
+const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080/ws'
+
+// WebSocket event types
+export type WSEventType = 'clip_created' | 'clip_ready' | 'clip_failed' | 'session_start' | 'session_end'
+
 // WebSocket for real-time events
 export class WebSocketService {
   private ws: WebSocket | null = null
   private handlers: Map<string, ((data: unknown) => void)[]> = new Map()
+  private url: string = WS_URL
+  private shouldReconnect: boolean = false
 
-  connect(url: string) {
-    this.ws = new WebSocket(url)
+  connect(url?: string) {
+    if (url) this.url = url
+    this.shouldReconnect = true
+
+    console.log('[WS] Connecting to', this.url)
+    this.ws = new WebSocket(this.url)
+
+    this.ws.onopen = () => {
+      console.log('[WS] Connected')
+    }
 
     this.ws.onmessage = (event) => {
-      const message = JSON.parse(event.data)
-      const handlers = this.handlers.get(message.type) || []
-      handlers.forEach(handler => handler(message.payload))
+      try {
+        const message = JSON.parse(event.data)
+        console.log('[WS] Received:', message.type, message.payload)
+        const handlers = this.handlers.get(message.type) || []
+        handlers.forEach(handler => handler(message.payload))
+      } catch (err) {
+        console.error('[WS] Failed to parse message:', err)
+      }
     }
 
     this.ws.onclose = () => {
-      // Reconnect after 3 seconds
-      setTimeout(() => this.connect(url), 3000)
+      console.log('[WS] Disconnected')
+      if (this.shouldReconnect) {
+        // Reconnect after 3 seconds
+        setTimeout(() => this.connect(), 3000)
+      }
+    }
+
+    this.ws.onerror = (err) => {
+      console.error('[WS] Error:', err)
     }
   }
 
-  on(eventType: string, handler: (data: unknown) => void) {
+  disconnect() {
+    this.shouldReconnect = false
+    if (this.ws) {
+      this.ws.close()
+      this.ws = null
+    }
+  }
+
+  isConnected(): boolean {
+    return this.ws?.readyState === WebSocket.OPEN
+  }
+
+  on(eventType: WSEventType | string, handler: (data: unknown) => void) {
     const handlers = this.handlers.get(eventType) || []
     handlers.push(handler)
     this.handlers.set(eventType, handlers)

@@ -368,3 +368,107 @@ body {
 .remove-agent-btn:hover {
   color: #ef4444;
 }
+
+/* Recent Clips */
+.recent-clips {
+  background: #2a2a2a;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.clips-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.clips-header h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.clear-btn {
+  padding: 0.25rem 0.5rem;
+  background: transparent;
+  border: 1px solid #4a4a4a;
+  color: #888;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background: #3a3a3a;
+  color: white;
+}
+
+.no-clips {
+  color: #888;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.clips-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.clip-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.clip-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.clip-title {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.clip-meta {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.status-badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.status-pending {
+  background: #6b7280;
+  color: white;
+}
+
+.status-processing {
+  background: #f59e0b;
+  color: black;
+}
+
+.status-ready {
+  background: #22c55e;
+  color: white;
+}
+
+.status-failed {
+  background: #ef4444;
+  color: white;
+}

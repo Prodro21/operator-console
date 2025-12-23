@@ -1,11 +1,19 @@
+import { useEffect } from 'react'
 import { VideoWall } from './components/VideoWall'
 import { TaggingControls } from './components/TaggingControls'
 import { SessionControls } from './components/SessionControls'
 import { CaptureAgentConfig } from './components/CaptureAgentConfig'
-import { useSessionStore } from './stores/sessionStore'
+import { RecentClips } from './components/RecentClips'
+import { useSessionStore, connectWebSocket, disconnectWebSocket } from './stores/sessionStore'
 
 function App() {
   const session = useSessionStore((state) => state.session)
+
+  // Connect to WebSocket on mount
+  useEffect(() => {
+    connectWebSocket()
+    return () => disconnectWebSocket()
+  }, [])
 
   return (
     <div className="app">
@@ -21,6 +29,7 @@ function App() {
         <div className="controls-section">
           <CaptureAgentConfig />
           {session && session.status === 'live' && <TaggingControls />}
+          <RecentClips />
         </div>
       </main>
     </div>

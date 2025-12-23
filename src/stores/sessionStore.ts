@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import type { Session, Channel, CaptureAgent, MarkState, PlayTag } from '../types'
-import { captureApi, platformApi } from '../services/api'
+import type { Session, Channel, CaptureAgent, MarkState, PlayTag, Clip } from '../types'
+import { captureApi, platformApi, wsService } from '../services/api'
 
 interface SessionState {
   // Session
@@ -35,6 +35,11 @@ interface SessionState {
   currentTag: PlayTag
   setPlayType: (type: string) => void
   setResult: (result: string) => void
+
+  // Recent clips from WebSocket events
+  recentClips: Clip[]
+  addClip: (clip: Clip) => void
+  clearClips: () => void
 
   // Error state
   lastError: string | null
@@ -239,7 +244,48 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       currentTag: { ...state.currentTag, result },
     })),
 
+  // Recent clips from WebSocket
+  recentClips: [],
+  addClip: (clip) =>
+    set((state) => ({
+      recentClips: [clip, ...state.recentClips].slice(0, 50), // Keep last 50
+    })),
+  clearClips: () => set({ recentClips: [] }),
+
   // Error state
   lastError: null,
   clearError: () => set({ lastError: null }),
 }))
+
+// WebSocket event handlers - set up outside store to avoid recreation
+let wsInitialized = false
+
+export const initializeWebSocket = () => {
+  if (wsInitialized) return
+
+  wsService.on('clip_ready', (data) => {
+    console.log('[WS] Clip ready:', data)
+    const clip = data as import('../types').Clip
+    useSessionStore.getState().addClip(clip)
+  })
+
+  wsService.on('clip_created', (data) => {
+    console.log('[WS] Clip created:', data)
+  })
+
+  wsService.on('clip_failed', (data) => {
+    console.log('[WS] Clip failed:', data)
+    useSessionStore.setState({ lastError: `Clip generation failed: ${JSON.stringify(data)}` })
+  })
+
+  wsInitialized = true
+}
+
+export const connectWebSocket = (url?: string) => {
+  initializeWebSocket()
+  wsService.connect(url)
+}
+
+export const disconnectWebSocket = () => {
+  wsService.disconnect()
+}

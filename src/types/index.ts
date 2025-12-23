@@ -49,3 +49,21 @@ export interface ClipSegmentReady {
   timestamp: number
   isFinal: boolean
 }
+
+// Clip from video-platform
+export interface Clip {
+  id: string
+  session_id: string
+  channel_id: string
+  play_id?: string
+  title?: string
+  status: 'pending' | 'processing' | 'ready' | 'failed'
+  file_path?: string
+  thumbnail_path?: string
+  duration_seconds?: number
+  file_size_bytes?: number
+  format?: string
+  tags?: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
