@@ -64,6 +64,8 @@ export interface Clip {
   file_size_bytes?: number
   format?: string
   tags?: Record<string, unknown>
+  is_favorite?: boolean
+  view_count?: number
   created_at: string
   updated_at: string
 }

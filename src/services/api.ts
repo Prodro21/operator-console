@@ -33,6 +33,65 @@ export const platformApi = {
     const res = await fetch(`${PLATFORM_URL}/api/v1/channels`)
     return res.json()
   },
+
+  // Clips
+  async listClips(params?: {
+    session_id?: string
+    channel_id?: string
+    status?: string
+    favorite?: boolean
+    limit?: number
+    offset?: number
+  }) {
+    const searchParams = new URLSearchParams()
+    if (params?.session_id) searchParams.set('session_id', params.session_id)
+    if (params?.channel_id) searchParams.set('channel_id', params.channel_id)
+    if (params?.status) searchParams.set('status', params.status)
+    if (params?.favorite !== undefined) searchParams.set('favorite', String(params.favorite))
+    if (params?.limit) searchParams.set('limit', String(params.limit))
+    if (params?.offset) searchParams.set('offset', String(params.offset))
+
+    const url = `${PLATFORM_URL}/api/v1/clips${searchParams.toString() ? '?' + searchParams.toString() : ''}`
+    const res = await fetch(url)
+    return res.json()
+  },
+
+  async getClip(clipId: string) {
+    const res = await fetch(`${PLATFORM_URL}/api/v1/clips/${clipId}`)
+    return res.json()
+  },
+
+  async getSessionClips(sessionId: string) {
+    const res = await fetch(`${PLATFORM_URL}/api/v1/sessions/${sessionId}/clips`)
+    return res.json()
+  },
+
+  async toggleFavorite(clipId: string) {
+    const res = await fetch(`${PLATFORM_URL}/api/v1/clips/${clipId}/favorite`, {
+      method: 'POST',
+    })
+    return res.json()
+  },
+
+  async recordWatch(clipId: string) {
+    const res = await fetch(`${PLATFORM_URL}/api/v1/clips/${clipId}/watch`, {
+      method: 'POST',
+    })
+    return res.json()
+  },
+
+  // Helper to get clip URLs
+  getClipStreamUrl(clipId: string) {
+    return `${PLATFORM_URL}/api/v1/clips/${clipId}/stream`
+  },
+
+  getClipThumbnailUrl(clipId: string) {
+    return `${PLATFORM_URL}/api/v1/clips/${clipId}/thumbnail`
+  },
+
+  getClipDownloadUrl(clipId: string) {
+    return `${PLATFORM_URL}/api/v1/clips/${clipId}/download`
+  },
 }
 
 // Capture Agent API
