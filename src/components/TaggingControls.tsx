@@ -10,6 +10,7 @@ export function TaggingControls() {
     currentTag,
     startMark,
     endMark,
+    quickClip,
     setPlayType,
     setResult,
   } = useSessionStore()
@@ -35,7 +36,7 @@ export function TaggingControls() {
         break
       case 'q':
         // Quick clip - last 15 seconds
-        console.log('Quick clip triggered')
+        quickClip(15)
         break
       case '1':
         setPlayType('Run')
@@ -59,7 +60,7 @@ export function TaggingControls() {
         setResult('Incomplete')
         break
     }
-  }, [markState.isMarking, startMark, endMark, setPlayType, setResult])
+  }, [markState.isMarking, startMark, endMark, quickClip, setPlayType, setResult])
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
@@ -92,7 +93,7 @@ export function TaggingControls() {
           MARK OUT
         </button>
 
-        <button className="mark-btn quick-clip">
+        <button className="mark-btn quick-clip" onClick={() => quickClip(15)}>
           QUICK CLIP (15s)
         </button>
       </div>

@@ -63,11 +63,27 @@ export const captureApi = {
     return res.json()
   },
 
-  async endGhostClip(agentUrl: string, playId: string) {
+  async endGhostClip(agentUrl: string, playId: string, tags?: Record<string, unknown>) {
     const res = await fetch(`${agentUrl}/api/v1/mark/out`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ play_id: playId }),
+      body: JSON.stringify({
+        play_id: playId,
+        generate_clip: true,
+        tags: tags || {},
+      }),
+    })
+    return res.json()
+  },
+
+  async quickClip(agentUrl: string, durationSeconds: number, playId?: string) {
+    const res = await fetch(`${agentUrl}/api/v1/clip/quick`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        duration_seconds: durationSeconds,
+        play_id: playId || `quick-${Date.now()}`,
+      }),
     })
     return res.json()
   },
