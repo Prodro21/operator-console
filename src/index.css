@@ -70,6 +70,43 @@ body {
   font-size: 0.75rem;
 }
 
+.video-cell .live-dot {
+  color: #22c55e;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.video-cell .stream-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.8);
+  color: #888;
+  font-size: 0.875rem;
+}
+
+.video-cell .stream-overlay.error {
+  color: #ef4444;
+}
+
+.video-cell.playing .stream-overlay {
+  display: none;
+}
+
+.video-cell.loading {
+  border: 2px solid #3b82f6;
+}
+
+.video-cell.error {
+  border: 2px solid #ef4444;
+}
+
 /* Tagging Controls */
 .tagging-controls {
   background: #2a2a2a;
