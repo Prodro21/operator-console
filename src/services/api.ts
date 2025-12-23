@@ -169,7 +169,7 @@ export const captureApi = {
 const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080/ws'
 
 // WebSocket event types
-export type WSEventType = 'clip_created' | 'clip_ready' | 'clip_failed' | 'session_start' | 'session_end'
+export type WSEventType = 'clip_created' | 'clip_ready' | 'clip_failed' | 'session_start' | 'session_end' | 'clip_segment_ready'
 
 // WebSocket for real-time events
 export class WebSocketService {

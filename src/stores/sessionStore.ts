@@ -278,6 +278,19 @@ export const initializeWebSocket = () => {
     useSessionStore.setState({ lastError: `Clip generation failed: ${JSON.stringify(data)}` })
   })
 
+  // Ghost clip segment streaming - log for now, iPad app will use this for pre-download
+  wsService.on('clip_segment_ready', (data) => {
+    const segment = data as {
+      play_id: string
+      channel_id: string
+      segment_url: string
+      sequence: number
+      timestamp: number
+      is_final: boolean
+    }
+    console.log('[WS] Segment ready:', segment.channel_id, 'seq:', segment.sequence, segment.is_final ? '(FINAL)' : '')
+  })
+
   wsInitialized = true
 }
 
